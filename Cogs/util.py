@@ -151,7 +151,7 @@ class CommandRegistry:
         Categories = {} if with_command_info else []
         ALLCMDS = list(self.bot.commands)
         names = [cmd.name for cmd in ALLCMDS]
-        ALLCMDS.extend([cmd for cmd in self.bot.tree.get_commands() if cmd.name not in names])
+        ALLCMDS.extend([cmd for cmd in self.bot.tree.get_commands(type=(discord.AppCommandType.chat_input)) if cmd.name not in names])
         for cmd in ALLCMDS:
             cat = self.get_category(cmd)
             if cat not in Categories:
@@ -177,6 +177,7 @@ class CommandRegistry:
     @staticmethod
     def get_params(command: AllCommandTypes) -> list[dict]:
         params = []
+        if isinstance(command, discord.app_commands.Group): return params
         for param in command.clean_params.values():
             params.append({
                 "name": param.name,
@@ -186,7 +187,10 @@ class CommandRegistry:
         return params
 
     async def inspect(self, command: AllCommandTypes, *, only_subcommand_names: bool = True) -> CommandInfo:
-        perms = [await check() for check in command.checks if "commands_extra" in str(check)]
+        if not isinstance(command, discord.app_commands.Group):
+            perms = [await check() for check in command.checks if "commands_extra" in str(check)]
+        else:
+            perms = []
         outputdict = {}
         for dit in perms:
             for key, item in dit.items():
@@ -197,17 +201,17 @@ class CommandRegistry:
         return CommandInfo(
             name=command.name,
             description=command.description or "No description provided.",
-            full_name=(command.full_parent_name + " " + command.name) if command.full_parent_name else command.name,
+            full_name=(command.full_parent_name + " " + command.name) if getattr(command, "full_parent_name", None) else command.name,
             prefix=self.bot.command_prefix if isinstance(command, PrefixTypes) else "/",
-            aliases=command.aliases,
+            aliases=getattr(command, "aliases", []),
             subcommands=self.get_subcommand_names(command) if only_subcommand_names else self.get_subcommands(command),
             category=self.get_category(command),
             params=self.get_params(command),
             permissions=[perm.replace("_", " ").title() for perm in permissions],
 
-            cog=None if not command.cog_name else command.cog_name,
+            cog=getattr(command, "cog_name", None),
             module=command.module,
 
             guild_only=command.guild_only if isinstance(command, (SlashTypes)) else ("guild_only" in str(command.checks)),
-            hidden=self.get_category(command).startswith("_") or ("is_owner" in str(command.checks))
+            hidden=self.get_category(command).startswith("_") or ("is_owner" in str(getattr(command, "checks", [])))
         )

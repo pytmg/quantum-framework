@@ -3,7 +3,6 @@ from discord import ui
 from discord.ext import commands
 from Cogs.util import CommandInfo, CommandRegistry, Debugger, Paginator
 
-
 class PageBtn(ui.Button):
     def __init__(self, categories: list[str], goal: int, View: "HelpView"):
         super().__init__()
@@ -74,6 +73,7 @@ class CategorySelector(ui.Select):
     async def update(self, View: "HelpView"):
         # Copy the current help menu state into the selector.
         self.paginator = View.paginator
+        self.categories = View.categories
         self.user = View.user
         self.category = View.category
         self.cmdreg = View.cmdreg
@@ -316,7 +316,6 @@ class HelpCog(commands.Cog):
                 paginator=paginator
             ).populate()
         )
-
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(HelpCog(bot))
