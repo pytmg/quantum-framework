@@ -8,6 +8,7 @@ class PageBtn(ui.Button):
         super().__init__()
 
         # Keep the view's state so the button knows what it is navigating.
+        self.goal = goal
         self.paginator = View.paginator
         self.user = View.user
         self.category = View.category
