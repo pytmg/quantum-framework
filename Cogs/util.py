@@ -31,17 +31,26 @@ class Paginator:
 class classproperty(property):
     def __get__(self, obj, objtype=None):
         return self.fget(objtype)
-
-class errorreport: # Used in cogs' error handlers. See `examples/`.
+        
+class errorreport: # used in cogs' error handlers, see examples/
+    """
+    A class for Quantum Framework's error handling, expected when a cog has its own error handler.
+    """
     def __init__(self, success: bool = False):
         self.success = success
 
     @classproperty
-    def handled(self):
+    def handled(self) -> "errorreport":
+        """
+        The error was handled.
+        """
         return errorreport(success=True)
 
     @classproperty
-    def unhandled(self):
+    def unhandled(self) -> "errorreport":
+        """
+        The error was not handled.
+        """
         return errorreport(success=False)
 
 class commands_extra: # Functions for Help to know what permissions are required for the user to run the command.
