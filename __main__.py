@@ -297,7 +297,10 @@ async def on_command_error(ctx: commands.Context, error):
 
                 if returned.success:
                     return
-
+            elif returned is None: # in the offchange the error handler in the cog does not handle a specific error
+                Debugger.print(
+                    f"{ctx.command.cog_name} returned no report."
+                )
             else:
                 Debugger.print(
                     f"{ctx.command.cog_name} returned an unknown report."
