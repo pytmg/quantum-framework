@@ -290,14 +290,18 @@ async def on_command_error(ctx: commands.Context, error):
             returned = await ctx.command.cog.handle_err(ctx, error)
 
             if isinstance(returned, errorreport):
-                Debugger.print(
-                    f"{ctx.command.cog_name} returned a "
-                    f"{'success' if returned.success else 'failure'}"
-                )
-
+                if returned.success is None:
+                    Debugger.print(
+                        f"{ctx.command.cog_name} left handling to global handler."
+                    )
+                else:
+                    Debugger.print(
+                        f"{ctx.command.cog_name} returned a "
+                        f"{'success' if returned.success else 'failure'}"
+                    )
                 if returned.success:
                     return
-            elif returned is None: # in the offchange the error handler in the cog does not handle a specific error
+            elif returned is None: # in the offchance the error handler in the cog does not handle a specific error
                 Debugger.print(
                     f"{ctx.command.cog_name} returned no report."
                 )

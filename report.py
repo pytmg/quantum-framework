@@ -1,6 +1,8 @@
+from typing import Any
+
 class Reporter:
     @staticmethod
-    def SReport(report: dict, *, leftcolumn: str = "", beautify: bool = False) -> str:
+    def SReport(report: dict[str, dict[str, Any]], *, leftcolumn: str = "", beautify: bool = False) -> str:
         """
         Convert a report dictionary into a Markdown-style table.
 
@@ -17,11 +19,13 @@ class Reporter:
         Each key in the inner dictionaries becomes a column. Different entries
         may contain different fields; missing fields are left blank.
 
-        beautify:
-            Adds padding so the columns line up in monospace output.
+        Parameters:
+            report (dict[str, dict[str, Any]]): A dict containing strings as keys and dicts as values.
+            beautify (bool): Adds padding so the columns line up in monospace output.
+            leftcolumn (str): Name of the column containing the keys from the outer dictionary.
 
-        leftcolumn:
-            Name of the column containing the keys from the outer dictionary.
+        Returns:
+            str: The formatted table based on the report dictionary.
         """
 
         # Discover every field used by every report entry.

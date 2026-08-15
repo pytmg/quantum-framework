@@ -5,3 +5,6 @@ __pycache__
 # editor stuff
 .vscode
 debugging
+
+# Quantum-framework specific
+temp/

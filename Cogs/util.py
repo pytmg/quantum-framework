@@ -37,6 +37,8 @@ class errorreport: # used in cogs' error handlers, see examples/
     A class for Quantum Framework's error handling, expected when a cog has its own error handler.
     """
     def __init__(self, success: bool = False):
+        if not isinstance(success, bool) and success is not None:
+            raise TypeError("success MUST be a bool or None")
         self.success = success
 
     @classproperty
@@ -45,6 +47,13 @@ class errorreport: # used in cogs' error handlers, see examples/
         The error was handled.
         """
         return errorreport(success=True)
+
+    @classproperty
+    def globalhandler(self) -> "errorreport":
+        """
+        The error was left for the global handler.
+        """
+        return errorreport(success=None)
 
     @classproperty
     def unhandled(self) -> "errorreport":
@@ -61,7 +70,7 @@ class commands_extra: # Functions for Help to know what permissions are required
                 if not ctx:
                     return permissions
                 return all(
-                    getattr(ctx.author.guild_permissions, perm) == value
+                    getattr(ctx.channel.permissions_for(ctx.author), perm) == value
                     for perm, value in permissions.items()
                 )
             return commands.check(predicate)(func)
@@ -70,7 +79,20 @@ class commands_extra: # Functions for Help to know what permissions are required
     
     @staticmethod
     def has_guild_permissions(**permissions):
-        return commands_extra.has_permissions(**permissions)
+        def decorator(func):
+            async def predicate(ctx: commands.Context = None):
+                if not ctx:
+                    return permissions
+                return all(
+                    getattr(ctx.author.guild_permissions, perm) == value
+                    for perm, value in permissions.items()
+                )
+            return commands.check(predicate)(func)
+
+        return decorator
+
+commands_extra.has_guild_permissions.__doc__ = commands.has_guild_permissions.__doc__
+commands_extra.has_permissions.__doc__ = commands.has_permissions.__doc__
     
 class Debugger:
     @staticmethod

@@ -20,7 +20,7 @@ Quantum is designed around the idea that developing a Discord bot shouldn't requ
 
 The framework provides the architecture and developer tooling, while your bot's cogs provide the actual functionality.
 
-Quantum itself is developed alongside Quantum V2, which serves as the framework's primary real-world test environment. Architectural improvements are moved into this project once they have been proven stable.
+Quantum Framework is tested against Quantum V2's feature set and edge-cases. Once proven stable, all architectural changes will be moved to this open-source repository.
 
 ## How to set up Quantum Framework for your bot
 
@@ -155,6 +155,6 @@ For changes to the framework's core functionality that cannot be hot-reloaded, r
 
 ## Status
 
-Quantum Framework is currently under active development.
+Quantum Framework is currently under active development, and most releases are stable.
 
-The architecture is being extracted from Quantum V2 as features are stabilised, so expect things to change while the framework is being developed.
+The architecture is tested and extracted from Quantum V2 when changes are made.
