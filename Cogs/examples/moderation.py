@@ -9,7 +9,7 @@ class ModerationCog(commands.Cog):
 
     # Hybrid commands work as both prefix and slash commands.
     @commands.hybrid_command(name="ban", description="Ban a user.")
-    @commands_extra.has_guild_permissions(ban_members=True)
+    @commands_extra.has_guild_permissions(ban_members=True) # Use this instead of commands.has_guild_permissions so permissions show in Help.
     async def ban_command(self, ctx: commands.Context, *, member: discord.Member) -> None:
         """
         Parameters
@@ -24,11 +24,16 @@ class ModerationCog(commands.Cog):
             # The bot itself does not have permission to ban the member.
             await ctx.reply(f"I do not have the necessary permissions to ban users.")
 
-    async def handle_err(ctx: commands.Context, err: Exception) -> errorreport | None:
+    async def handle_err(self, ctx: commands.Context, err: Exception) -> errorreport | None:
         # CheckFailure is raised when the permission check above fails.
-        if ctx.command.name == "ban" and isinstance(err, commands.errors.CheckFailure):
-            await ctx.reply("You need to have the Ban Members permission to use this command.")
-            return errorreport.handled
+        if ctx.command.name == "ban":
+            if isinstance(err, commands.errors.CheckFailure):
+                await ctx.reply("You need to have the Ban Members permission to use this command.")
+                return errorreport.handled
+            if isinstance(err, commands.errors.MissingRequiredArgument):
+                if str(err).startswith("member"):
+                    await ctx.reply("You need to provide a member to ban.")
+                    return errorreport.handled
         return errorreport.globalhandler
 
 async def setup(bot: commands.Bot):

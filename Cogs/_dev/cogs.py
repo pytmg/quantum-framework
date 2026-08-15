@@ -1,6 +1,6 @@
 import discord, traceback, os
 from discord.ext import commands
-from Cogs.util import Debugger
+from Cogs.util import Debugger, errorreport
 
 class cogsCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -183,6 +183,11 @@ class cogsCommands(commands.Cog):
             f"Loaded cogs: ({len(self.bot.extensions)})\n- `{loaded_cogs}`"
             [:1500] + ("`..." if len(loaded_cogs) > 1500 else "")
         )
+
+    async def handle_err(self, ctx: commands.Context, err: Exception) -> errorreport:
+        if isinstance(err, commands.errors.NotOwner):
+            return errorreport.handled
+        return errorreport.globalhandler
 
 async def setup(bot):
     await bot.add_cog(cogsCommands(bot))

@@ -1,7 +1,7 @@
 import subprocess, sys
 from pathlib import Path
 from discord.ext import commands
-
+from Cogs.util import errorreport
 
 class DeveloperCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -35,6 +35,10 @@ class DeveloperCog(commands.Cog):
         self.bot.close()
         sys.exit(0)
 
+    async def handle_err(self, ctx: commands.Context, err: Exception) -> errorreport:
+        if isinstance(err, commands.errors.NotOwner):
+            return errorreport.handled
+        return errorreport.globalhandler
 
 async def setup(bot: commands.Bot):
     # This function is required for the CogHandler to load the cog.
