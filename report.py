@@ -118,7 +118,6 @@ class Reporter:
         # The caller can print this directly or include it elsewhere.
         return "\n".join(Table)
 
-
 if __name__ == "__main__":
     # Simple standalone example showing the expected report structure and
     # what the beautified output looks like.

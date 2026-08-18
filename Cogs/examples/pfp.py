@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from Cogs.util import errorreport
 
-
 class ProfilePictureCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -42,22 +41,18 @@ class ProfilePictureCog(commands.Cog):
         self,
         ctx: commands.Context,
         error: Exception
-    ) -> errorreport:
+    ) -> errorreport | None:
         # Cogs can provide their own error handler by defining handle_err.
         # Return errorreport.handled or errorreport(True) when the error has been dealt with here.
-        if ctx.command.name == self.pfp.name:
-            # Check the specific command before handling its errors.
+        if ctx.command.name == self.pfp.name: # Check the specific command before handling its errors.
             if isinstance(error, (commands.MemberNotFound, commands.UserNotFound)):
                 embed = discord.Embed(
                     title=":x: Member not found.",
                     description="I don't know who that member is.",
                     color=0xff0000
                 )
-
                 await ctx.reply(embed=embed)
-
                 return errorreport.handled
-
 
 async def setup(bot: commands.Bot):
     # Every cog needs a setup function so the CogHandler can load it.

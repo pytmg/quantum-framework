@@ -1,8 +1,7 @@
 import os
-from Cogs.util import Debugger
+from Cogs.util import Debugger, Log, AllCommandTypes
 from discord.ext import commands
 from typing import Any
-
 
 class CogHandler:
     @staticmethod
@@ -12,7 +11,8 @@ class CogHandler:
         exceptions: list[str] | None = None,
         ignore_no_setup: bool = False,
         silent: bool = True,
-        noload: bool = False
+        noload: bool = False,
+        log: Log = None
     ) -> tuple[dict[str, dict[str, Any]], list, list, list, list]:
         """
         Hot-reloader for extensions in a folder.
@@ -24,6 +24,7 @@ class CogHandler:
             ignore_no_setup (bool): Whether to ignore the NoEntryPoint error or not
             silent (bool): Prevents printing every cog's status when (re/un)loaded. (default: True)
             noload (bool): Prevents (re/un)loading extensions (default: False)
+            log (Log): Log all Cogs' commands and listeners if provided (default: None)
 
         Returns:
             dict[str, dict[str, Any]], list, list, list, list:
@@ -101,6 +102,52 @@ class CogHandler:
                                 # attempt after the entire directory has been scanned.
                                 w.append(extName)
                                 continue
+
+                        if log:
+                            # Get all Cog classes defined by the extension.
+                            # Only classes inheriting from commands.Cog are included.
+                            EXT = bot.extensions.get(extName)
+                            cogsinext = [
+                                getattr(EXT, name)
+                                for name in dir(EXT)
+                                if isinstance(getattr(EXT, name), type)
+                                and issubclass(getattr(EXT, name), commands.Cog)
+                            ]
+
+                            # Build the log output one section at a time so each
+                            # Cog's commands and listeners stay grouped together.
+                            sections = [f"{extName} | Cogs: {[cog.__name__ for cog in cogsinext]}"]
+
+                            for cog in cogsinext:
+                                # Commands are stored as command objects on the Cog
+                                # class, allowing them to be identified by their types.
+                                commands_ = [
+                                    f"{name}: {getattr(cog, name).__class__.__name__}"
+                                    for name in dir(cog)
+                                    if isinstance(getattr(cog, name), AllCommandTypes)
+                                ]
+
+                                # Cog listeners are regular functions whose names
+                                # follow discord.py's "on_*" event naming convention.
+                                listeners = [
+                                    f"{name}: {getattr(cog, name).__class__.__name__}"
+                                    for name in dir(cog)
+                                    if name.startswith("on_")
+                                ]
+
+                                sections.append(
+                                    f"Commands in {cog.__name__}\n"
+                                    f"    {'\n    '.join(commands_)}"
+                                )
+
+                                sections.append(
+                                    f"Listeners in {cog.__name__}\n"
+                                    f"    {'\n    '.join(listeners)}"
+                                )
+
+                            # Pass each section separately so Log.print() can handle
+                            # joining them with newlines.
+                            log.print(*sections, sep="\n")
 
                         if not silent:
                             Debugger.print(
@@ -206,10 +253,8 @@ class CogHandler:
 
         return c, rl, n, d, err
 
-
 async def setup(bot: commands.Bot):
     bot.cog_handler = CogHandler
-
 
 async def teardown(bot: commands.Bot):
     bot.cog_handler = None

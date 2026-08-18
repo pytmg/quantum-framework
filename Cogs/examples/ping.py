@@ -38,7 +38,6 @@ class PingCog(commands.Cog):
 
             await message.edit(content=string)
 
-
-# This is the entry point Quantum uses when loading the cog.
+# This is the entry point discord.py uses when loading the cog.
 async def setup(bot: commands.Bot):
     await bot.add_cog(PingCog(bot))

@@ -2,3 +2,8 @@ discord.py
 PyNaCl
 python-dotenv
 requests
+
+# These are not specific versions because the framework is developed on the latest versions of these libraries.
+# If you're installing ancient versions of these libraries on purpose just to open an issue, I hate you. Set up your environment properly.
+
+# pip install -r requirements.txt

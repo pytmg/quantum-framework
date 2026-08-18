@@ -64,7 +64,6 @@ class PageBtn(ui.Button):
             ).populate()
         )
 
-
 class CategorySelector(ui.Select):
     def __init__(self):
         super().__init__()
@@ -126,7 +125,6 @@ class CategorySelector(ui.Select):
             ).populate()
         )
 
-
 class HelpView(ui.View):
     def __init__(
         self,
@@ -168,7 +166,6 @@ class HelpView(ui.View):
 
         return self
 
-
 def BuildEmbed(
     paginator: Paginator,
     page: int,
@@ -202,7 +199,6 @@ def BuildEmbed(
         )
 
     return embed
-
 
 class HelpCog(commands.Cog):
     def __init__(self, bot: commands.Bot):

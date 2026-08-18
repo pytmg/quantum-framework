@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from Cogs.util import commands_extra, errorreport
 
-
 class ModerationCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -22,15 +21,16 @@ class ModerationCog(commands.Cog):
             await ctx.reply(f"Member {member.display_name} was successfully banned.")
         except discord.Forbidden:
             # The bot itself does not have permission to ban the member.
-            await ctx.reply(f"I do not have the necessary permissions to ban users.")
+            await ctx.reply(f"I do not have the necessary permissions to ban users.", ephemeral=True) # ephemeral will show up for nobody except the person invoking the command
 
-    async def handle_err(self, ctx: commands.Context, err: Exception) -> errorreport | None:
-        # CheckFailure is raised when the permission check above fails.
-        if ctx.command.name == "ban":
-            if isinstance(err, commands.errors.CheckFailure):
-                await ctx.reply("You need to have the Ban Members permission to use this command.")
+    async def handle_err(self, ctx: commands.Context, err: Exception) -> errorreport:
+        if ctx.command.name == self.ban_command.name:
+            # CheckFailure is raised when the permission check above fails for the user.
+            if isinstance(err, commands.errors.CheckFailure): # This error can show up in slash commands
+                await ctx.reply("You need to have the Ban Members permission to use this command.", ephemeral=True)
                 return errorreport.handled
-            if isinstance(err, commands.errors.MissingRequiredArgument):
+            # MissingRequiredArgument is raised when the user does not provide the required argument.
+            if isinstance(err, commands.errors.MissingRequiredArgument): # This error cannot show up in slash commands
                 if str(err).startswith("member"):
                     await ctx.reply("You need to provide a member to ban.")
                     return errorreport.handled

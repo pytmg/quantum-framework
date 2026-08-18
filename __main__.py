@@ -5,7 +5,6 @@ from discord.ext import commands
 from Cogs.util import Debugger, errorreport
 from report import Reporter
 
-
 env()
 
 # Global exception handler for errors that escape the normal command/event handling.
@@ -14,7 +13,6 @@ def handle_exception(exc_type, exc_value, exc_traceback):
         return
     print("Uncaught exception", exc_type, exc_value)
     traceback.print_tb(exc_traceback)
-
 
 sys.excepthook = handle_exception
 
@@ -38,7 +36,6 @@ except:
 
 os.makedirs("temp")
 
-
 @bot.event
 async def on_ready():
     print(f"[login.report] Logged in as {bot.user.name}")
@@ -56,7 +53,6 @@ async def on_ready():
     )
 
     print(f"[login.report.debug] Debugger Active?: {Debugger.IsEnabled()}")
-
 
 @bot.command()
 @commands.guild_only()
@@ -100,7 +96,6 @@ async def sync(
     except Exception as e:
         print(f"{e.__class__.__name__}: {e}")
 
-
 @bot.command()
 @commands.is_owner()
 async def loadrequirements(ctx: commands.Context):
@@ -142,7 +137,6 @@ async def loadrequirements(ctx: commands.Context):
         )
     else:
         await Msg.edit(content=f"{cogCog} reloaded.")
-
 
 @bot.command()
 async def recovercoghandler(ctx: commands.Context):
@@ -253,7 +247,6 @@ async def recovercoghandler(ctx: commands.Context):
     except Exception as e:
         await ctx.reply(f"{e.__class__.__name__}: {e}")
 
-
 @bot.event
 async def on_command_error(ctx: commands.Context, error):
     # Handle unknown commands ourselves because the default help command is disabled.
@@ -323,7 +316,6 @@ async def on_command_error(ctx: commands.Context, error):
     )
     print("\x1b[0m")
 
-
 def handle_async_exception(loop, context):
     """
     Handle exceptions raised by asyncio tasks that aren't propagated normally.
@@ -338,7 +330,6 @@ def handle_async_exception(loop, context):
             context["exception"],
             context["exception"].__traceback__
         )
-
 
 async def main():
     loop = asyncio.get_running_loop()
@@ -394,6 +385,5 @@ async def main():
             e,
             e.__traceback__
         )
-
 
 asyncio.run(main())

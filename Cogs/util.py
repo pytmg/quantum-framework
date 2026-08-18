@@ -1,7 +1,26 @@
-import discord
-from typing import Any
+import discord, datetime, os, io
+from typing import Any, TextIO
 from discord.ext import commands
 from dataclasses import dataclass, field
+
+class Log:
+    def __init__(self):
+        self.logs = []
+
+    def print(self, *text, sep: str = " "):
+        txt = sep.join([str(t) for t in text])
+        clock = f"[{datetime.datetime.now().isoformat()}] "
+        txt = f"{clock}" + txt.replace("\n", f"\n{' '*len(clock)}")
+        self.logs.append(txt)
+
+    def flush(self, file: str | os.PathLike | TextIO):
+        if not isinstance(file, (str, os.PathLike, io.TextIOBase)):
+            raise TypeError
+        fp = file
+        if isinstance(file, (str, os.PathLike)):
+            fp = open(file, "w")
+        fp.write("\n".join(self.logs))
+        fp.close() if isinstance(file, (str, os.PathLike)) else 0
 
 class Paginator:
     def __init__(self, data: list[Any], items_per_page: int):
@@ -154,7 +173,7 @@ class CommandInfo:
     def __repr__(self):
         return self.name
 
-# Type aliases, unused outside of utils.py
+# Union types
 GroupTypes = commands.Group | commands.HybridGroup | discord.app_commands.Group
 CommandTypes = commands.Command | commands.HybridCommand | discord.app_commands.Command
 SlashTypes = discord.app_commands.Command | discord.app_commands.Group
