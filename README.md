@@ -25,7 +25,7 @@ Quantum Framework is tested against Quantum V2's feature set and edge-cases. Onc
 ## How to set up Quantum Framework for your bot
 
 > [!IMPORTANT]
-> The code in this repository uses syntax from Python 3.10+
+> The code in this repository requires Python 3.10+.
 
 ### 1. Clone the repository
 
