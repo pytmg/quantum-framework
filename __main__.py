@@ -139,6 +139,7 @@ async def loadrequirements(ctx: commands.Context):
         await Msg.edit(content=f"{cogCog} reloaded.")
 
 @bot.command()
+@commands.is_owner()
 async def recovercoghandler(ctx: commands.Context):
     """
     Recover CogHandler directly from the Quantum Framework repository.
