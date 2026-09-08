@@ -50,7 +50,7 @@ class CogHandler:
         # Keep a reference to the extensions that existed before scanning.
         # This is important because newly loaded extensions are added to bot.extensions
         # while we're walking the folder.
-        existing = bot.extensions
+        existing = list(bot.extensions)
         found_modules = set()
 
         for root, folders, files in os.walk(folder):
