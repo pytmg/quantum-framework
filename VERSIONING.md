@@ -12,4 +12,4 @@ Expect documentation on stable or `-beta` releases.
 
 ---
 
-Next up: `V1.0.0-nodoc` (eta. within the next month, idk, dont sacrifice me if its like next year or sum)
+Next up: `V1.0.0-nodoc` (eta. within the next month, idk, dont sacrifice me if its like next year or sum) (or `V1.0.0-beta` if you're lucky)
