@@ -61,6 +61,11 @@ For example:
 
 **Do not rely on deprecated APIs remaining available in the stable release.**
 
+## Beta Hotfixes
+
+Critical bugs discovered during public beta, whether it be through testing, or real-world usage, will be hotfixed under the same version.
+If you are on a `-beta`/`-nodoc` version, and there's a bug, check out [Issues](https://github.com/pytmg/quantum-framework/issues) and [report it](https://github.com/pytmg/quantum-framework/issues/new/choose).
+
 ---
 
 Next up: V1.0.0-nodoc (eta. sometime soon, after GTA6)
